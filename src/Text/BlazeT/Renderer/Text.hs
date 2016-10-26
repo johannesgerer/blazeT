@@ -1,13 +1,5 @@
 module Text.BlazeT.Renderer.Text
-    ( renderMarkupBuilderT
-    , renderMarkupBuilder
-    , renderMarkupBuilderWithT
-    , renderMarkupT
-    , renderMarkupWithT
-    , renderHtmlBuilderT
-    , renderHtmlBuilderWithT
-    , renderHtmlT
-    , renderHtmlWithT
+    ( renderMarkupBuilder
     , renderMarkupBuilderWith
     , renderMarkup
     , renderMarkupWith
@@ -17,9 +9,7 @@ module Text.BlazeT.Renderer.Text
     , renderHtmlWith
   ) where
 
-import           Control.Monad
 import           Data.ByteString (ByteString)
-import           Control.Monad.Identity
 import           Data.Text (Text)
 import qualified Data.Text.Lazy as L
 import qualified Data.Text.Lazy.Builder as B
@@ -28,48 +18,26 @@ import qualified Text.Blaze.Renderer.Text as BU
 import           Text.BlazeT
 
 renderMarkupBuilder :: MarkupM a -> B.Builder
-renderMarkupBuilder = runIdentity . renderMarkupBuilderT
-
-renderMarkupBuilderT :: Monad m => MarkupT m a -> m B.Builder
-renderMarkupBuilderT = liftM BU.renderMarkupBuilder . execMarkupT
+renderMarkupBuilder = BU.renderMarkupBuilder . execMarkup
 
 renderHtmlBuilder :: MarkupM a -> B.Builder
 renderHtmlBuilder = renderMarkupBuilder
 
-renderHtmlBuilderT :: Monad m => MarkupT m a -> m B.Builder
-renderHtmlBuilderT = renderMarkupBuilderT
-
 renderMarkup :: MarkupM a -> L.Text
-renderMarkup = runIdentity . renderMarkupT
-renderMarkupT :: Monad m => MarkupT m a -> m L.Text
-renderMarkupT = liftM BU.renderMarkup . execMarkupT
+renderMarkup = BU.renderMarkup . execMarkup
 
 renderHtml :: MarkupM a -> L.Text
 renderHtml = renderMarkup
-renderHtmlT :: Monad m => MarkupT m a -> m L.Text
-renderHtmlT = renderMarkupT
-
-renderMarkupWithT :: Monad m => (ByteString -> Text) -> MarkupT m a -> m L.Text
-renderMarkupWithT g = liftM (BU.renderMarkupWith g) . execMarkupT
 
 renderMarkupWith :: (ByteString -> Text) -> MarkupM a -> L.Text
-renderMarkupWith g = runIdentity . renderMarkupWithT g
-
-renderHtmlWithT :: Monad m => (ByteString -> Text) -> MarkupT m a -> m L.Text
-renderHtmlWithT g = liftM (BH.renderHtmlWith g) . execMarkupT
+renderMarkupWith g = (BH.renderHtmlWith g) . execMarkup
 
 renderHtmlWith :: (ByteString -> Text) -> MarkupM a -> L.Text
-renderHtmlWith g = runIdentity . renderHtmlWithT g
+renderHtmlWith = renderMarkupWith
 
-renderHtmlBuilderWithT :: Monad m => (ByteString -> Text) -> MarkupT m a -> m B.Builder       
-renderHtmlBuilderWithT g = liftM (BH.renderHtmlBuilderWith g) . execMarkupT
+renderMarkupBuilderWith :: (ByteString -> Text) -> MarkupM a -> B.Builder
+renderMarkupBuilderWith g = (BU.renderMarkupBuilderWith g) . execMarkup
 
-renderHtmlBuilderWith :: (ByteString -> Text) -> MarkupM a -> B.Builder       
-renderHtmlBuilderWith g = runIdentity . renderHtmlBuilderWithT g
+renderHtmlBuilderWith :: (ByteString -> Text) -> MarkupM a -> B.Builder
+renderHtmlBuilderWith = renderHtmlBuilderWith
 
-
-renderMarkupBuilderWithT :: Monad m => (ByteString -> Text) -> MarkupT m a -> m B.Builder      
-renderMarkupBuilderWithT g = liftM (BU.renderMarkupBuilderWith g) . execMarkupT
-
-renderMarkupBuilderWith :: (ByteString -> Text) -> MarkupM a -> B.Builder       
-renderMarkupBuilderWith g = runIdentity . renderMarkupBuilderWithT g

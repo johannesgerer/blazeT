@@ -26,14 +26,14 @@ accumulating log or other diagnostic output
 doing `IO` (like database access) are the first things that come to
 mind.
 
-The initial reason of existence of this library is its use
+The reason of existence of this library is its use
 in [Lykah](http://johannesgerer.com/Lykah), which powers my personal
 website
 [http://johannesgerer.com](http://johannesgerer.com/johannesgerer.com). In
 Lykah, the HTML templates have access to the whole site structure (to
-build things like menus) and automatically check, insert and keep
-track of referenced pages and assets, which turns out to be very
-useful for the task of static website generation.
+build things like menus or blog post lists) and automatically check,
+insert and keep track of referenced pages and assets, which turns out
+to be very useful functionality of a static website generator.
 
 # How to use it?
 
@@ -51,20 +51,73 @@ their [documentation](https://jaspervdj.be/blaze/).
 
 ## Unleash the monads
 
+[Text.BlazeT](https://hackage.haskell.org/package/blazeT/docs/Text-BlazeT.html) exports
+`runWith` and `execWith`, which work on any
+`Text.Blaze.Renderer.*`. The rendered markup will be returned within
+the base monad, whose actions can
+be
+[`lift`ed](https://hackage.haskell.org/package/transformers-0.5.2.0/docs/Control-Monad-Trans-Class.html) into
+the Markup, as shown in the following example
+(from [here](src/Readme.hs)):
 
+```Haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Time (getCurrentTime)
+import Text.BlazeT.Html5 hiding (main)
+import Text.BlazeT.Renderer.String
+import Control.Monad.Trans.Class (lift)
+
+-- Backwords compatible Blaze HTML
+old :: Markup
+old = do
+  p $ "created with blaze-html"
+
+-- BlazeT HTML with lifted IO actions
+new :: MarkupT IO ()
+new = do
+  time <- lift getCurrentTime
+  p $ string $ "created with blazeT at " ++ show time
+
+main :: IO ()
+main = do
+  putStrLn $            renderMarkup old
+  putStrLn =<< execWith renderMarkup new
+  
+```
+
+prints: 
+
+```HTML
+<p>created with blaze-html</p>
+<p>created with blazeT at 2016-10-26 01:09:16.969147361 UTC</p>
+```
+
+# Installation
+
+1. To make it available on your system (or sandbox) use `cabal install blazeT`. 
+
+2. To play around with the source, obtain by cloning this repo or use
+   `cabal get blazet`, enter the directory and run:
+
+```bash
+cabal sandbox init #optional
+cabal install
+```
+    
+# Documentation on [Hackage](https://hackage.haskell.org/package/blazeT)
 
 # Implementation
 
-... is located
+... is contained
 in
 [Text.BlazeT.Internals](https://hackage.haskell.org/package/blazeT/docs/Text-BlazeT-Internals.html).
 
-Everything build around the simple `newtype` definition of the
-`MarkupT` transformer, which makes use of the fact that `Blaze.Markup`
-is
-a
-[Monoid](https://hackage.haskell.org/package/base-4.7.0.2/docs/Data-Monoid.html) and
-which is basically a `WriterT` transformer writing `Blaze.Markup`:
+Everything is build around the simple `newtype` definition of the
+`MarkupT` transformer, which makes use
+the
+[Monoid](https://hackage.haskell.org/package/base-4.7.0.2/docs/Data-Monoid.html) instance
+of `Blaze.Markup` and is basically a `WriterT` writing `Blaze.Markup`:
 
 ```Haskell
 newtype MarkupT m a = MarkupT { fromMarkupT :: WriterT B.Markup m a }

@@ -83,8 +83,11 @@ module Text.BlazeT.Internal
     ,wrapMarkupT
     ,wrapMarkup2
     ,wrapMarkupT2
+    ,runWith
+    ,execWith
   ) where
 
+import           Control.Arrow
 import           Control.Monad.Identity
 import           Control.Monad.Trans.Class
 import           Control.Monad.Writer.Strict
@@ -121,9 +124,20 @@ runMarkupT :: MarkupT m a -> m (a,B.Markup)
 runMarkupT = runWriterT . fromMarkupT
 {-# INLINE runMarkupT #-}
 
+-- | run the MarkupT and return a pair consisting of the result of the
+-- computation and the blaze markup rendered with a blaze renderer
+-- like 'Text.Blaze.Renderer.Text.renderHtml'
+runWith :: Monad m => (MarkupM () -> c) -> MarkupT m a -> m (a, c)
+runWith renderer = liftM (second $ renderer . wrapMarkup) . runMarkupT  
+{-# INLINE runWith #-}
+  
 execMarkupT :: Monad m => MarkupT m a -> m B.Markup
 execMarkupT = liftM snd . runMarkupT
 {-# INLINE execMarkupT #-}
+
+execWith :: Monad m => (MarkupM () -> c) -> MarkupT m a -> m c
+execWith renderer = liftM snd . runWith renderer
+{-# INLINE execWith #-}
 
 runMarkup :: MarkupM a -> (a,B.Markup)
 runMarkup = runIdentity . runMarkupT

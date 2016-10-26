@@ -62,6 +62,8 @@ module Text.BlazeT
     ,runMarkupT
     ,execMarkup
     ,execMarkupT
+    ,runWith
+    ,execWith
     ) where
 
 import qualified Text.Blaze as B
