@@ -12,9 +12,9 @@ import           Text.BlazeT
 fromChoiceString :: ChoiceString -> String -> String       
 fromChoiceString = BU.fromChoiceString
 
-renderMarkup :: MarkupM a -> String
+renderMarkup :: MarkupI a -> String
 renderMarkup = BU.renderMarkup . execMarkup
 
-renderHtml :: MarkupM a -> String
+renderHtml :: MarkupI a -> String
 renderHtml = renderMarkup
 

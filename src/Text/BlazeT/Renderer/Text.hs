@@ -18,27 +18,27 @@ import qualified Text.Blaze.Html.Renderer.Text as BH
 import qualified Text.Blaze.Renderer.Text as BU
 import           Text.BlazeT
 
-renderMarkupBuilder :: MarkupM a -> B.Builder
+renderMarkupBuilder :: MarkupI a -> B.Builder
 renderMarkupBuilder = BU.renderMarkupBuilder . execMarkup
 
-renderHtmlBuilder :: MarkupM a -> B.Builder
+renderHtmlBuilder :: MarkupI a -> B.Builder
 renderHtmlBuilder = renderMarkupBuilder
 
-renderMarkup :: MarkupM a -> L.Text
+renderMarkup :: MarkupI a -> L.Text
 renderMarkup = BU.renderMarkup . execMarkup
 
-renderHtml :: MarkupM a -> L.Text
+renderHtml :: MarkupI a -> L.Text
 renderHtml = renderMarkup
 
-renderMarkupWith :: (ByteString -> Text) -> MarkupM a -> L.Text
+renderMarkupWith :: (ByteString -> Text) -> MarkupI a -> L.Text
 renderMarkupWith g = (BH.renderHtmlWith g) . execMarkup
 
-renderHtmlWith :: (ByteString -> Text) -> MarkupM a -> L.Text
+renderHtmlWith :: (ByteString -> Text) -> MarkupI a -> L.Text
 renderHtmlWith = renderMarkupWith
 
-renderMarkupBuilderWith :: (ByteString -> Text) -> MarkupM a -> B.Builder
+renderMarkupBuilderWith :: (ByteString -> Text) -> MarkupI a -> B.Builder
 renderMarkupBuilderWith g = (BU.renderMarkupBuilderWith g) . execMarkup
 
-renderHtmlBuilderWith :: (ByteString -> Text) -> MarkupM a -> B.Builder
+renderHtmlBuilderWith :: (ByteString -> Text) -> MarkupI a -> B.Builder
 renderHtmlBuilderWith = renderHtmlBuilderWith
 
