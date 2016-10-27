@@ -22,20 +22,20 @@ import qualified Data.ByteString.Lazy as BL
 import qualified Text.Blaze.Renderer.Utf8 as BU
 import           Text.BlazeT
 
-renderMarkupBuilder :: MarkupM a -> B.Builder
-renderMarkupBuilder x = BU.renderMarkupBuilder $ execMarkup x
+renderMarkupBuilder :: MarkupI a -> B.Builder
+renderMarkupBuilder = BU.renderMarkupBuilder . execMarkup
 
-renderHtmlBuilder :: MarkupM a -> B.Builder
+renderHtmlBuilder :: MarkupI a -> B.Builder
 renderHtmlBuilder = renderMarkupBuilder
 
-renderMarkup :: MarkupM a -> BL.ByteString
+renderMarkup :: MarkupI a -> BL.ByteString
 renderMarkup = BU.renderMarkup . execMarkup
 
-renderHtml :: MarkupM a -> BL.ByteString
+renderHtml :: MarkupI a -> BL.ByteString
 renderHtml = renderMarkup
 
-renderMarkupToByteStringIO :: (BS.ByteString -> IO ()) -> MarkupM a -> IO ()
+renderMarkupToByteStringIO :: (BS.ByteString -> IO ()) -> MarkupI a -> IO ()
 renderMarkupToByteStringIO g = BU.renderMarkupToByteStringIO g . execMarkup
 
-renderHtmlToByteStringIO :: (BS.ByteString -> IO ()) -> MarkupM a -> IO ()
+renderHtmlToByteStringIO :: (BS.ByteString -> IO ()) -> MarkupI a -> IO ()
 renderHtmlToByteStringIO = renderMarkupToByteStringIO

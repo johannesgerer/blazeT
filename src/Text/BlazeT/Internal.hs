@@ -146,7 +146,7 @@ runMarkupT = runWriterT . fromMarkupT
 -- | run the MarkupT and return a pair consisting of the result of the
 -- computation and the blaze markup rendered with a blaze renderer
 -- like 'Text.BlazeT.Renderer.Text.renderHtml'
-runWith :: Monad m => (Markup -> c) -> MarkupT m a -> m (a, c)
+runWith :: Monad m => (MarkupI () -> c) -> MarkupT m a -> m (a, c)
 runWith renderer =  liftM (second $ \x -> renderer $ wrapMarkup x) . runMarkupT  
 {-# INLINE runWith #-}
   
@@ -154,7 +154,7 @@ execMarkupT :: Monad m => MarkupT m a -> m Text.Blaze.Markup
 execMarkupT = liftM snd . runMarkupT
 {-# INLINE execMarkupT #-}
 
-execWith :: Monad m => (Markup -> c) -> MarkupT m a -> m c
+execWith :: Monad m => (MarkupI () -> c) -> MarkupT m a -> m c
 execWith renderer = liftM snd . runWith renderer
 {-# INLINE execWith #-}
 
@@ -165,26 +165,6 @@ runMarkup = runIdentity . runMarkupT
 execMarkup :: MarkupI a -> Text.Blaze.Markup
 execMarkup = snd . runMarkup
 {-# INLINE execMarkup #-}
-
-
-instance (Monad m,Monoid a) => Monoid (MarkupT m a) where
-  mempty = return mempty
-  {-# INLINE mempty #-}
-  a `mappend` b = do {a' <- a; b >>= return . (mappend a')}
-  {-# INLINE mappend #-}
-
-
-instance Monad m => Text.Blaze.Attributable (MarkupT m a) where
-  h ! a = wrapMarkupT2 (Text.Blaze.! a) h
-  {-# INLINE (!) #-}
-
-instance Monad m => Text.Blaze.Attributable (a -> MarkupT m b) where
-  h ! a = \x -> wrapMarkupT2 (Text.Blaze.! a) $ h x
-  {-# INLINE (!) #-}
-
-instance Monad m => IsString (MarkupT m ()) where
-  fromString = wrapMarkup . fromString
-  {-# INLINE fromString #-}
 
 -- | Wrapper for 'Text.Blaze.Markup' is simply
 -- 'tell'
@@ -207,6 +187,26 @@ wrapMarkupT2 = censor
 wrapMarkup2 :: (Text.Blaze.Markup -> Text.Blaze.Markup) -> Markup2
 wrapMarkup2 = wrapMarkupT2
 {-# INLINE wrapMarkup2 #-}
+
+
+instance (Monad m,Monoid a) => Monoid (MarkupT m a) where
+  mempty = return mempty
+  {-# INLINE mempty #-}
+  a `mappend` b = do {a' <- a; b >>= return . (mappend a')}
+  {-# INLINE mappend #-}
+
+
+instance Monad m => Text.Blaze.Attributable (MarkupT m a) where
+  h ! a = wrapMarkupT2 (Text.Blaze.! a) h
+  {-# INLINE (!) #-}
+
+instance Monad m => Text.Blaze.Attributable (a -> MarkupT m b) where
+  h ! a = \x -> wrapMarkupT2 (Text.Blaze.! a) $ h x
+  {-# INLINE (!) #-}
+
+instance Monad m => IsString (MarkupT m ()) where
+  fromString = wrapMarkup . fromString
+  {-# INLINE fromString #-}
 
 unsafeByteString :: BS.ByteString -> Markup
 unsafeByteString = wrapMarkup . Text.Blaze.unsafeByteString

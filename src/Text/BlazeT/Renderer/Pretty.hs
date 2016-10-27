@@ -7,9 +7,9 @@ module Text.BlazeT.Renderer.Pretty
 import qualified Text.Blaze.Renderer.Pretty as BU
 import           Text.BlazeT
 
-renderMarkup :: MarkupM a -> String
+renderMarkup :: MarkupI a -> String
 renderMarkup = BU.renderMarkup . execMarkup
 
-renderHtml :: MarkupM a -> String
+renderHtml :: MarkupI a -> String
 renderHtml = renderMarkup
 
