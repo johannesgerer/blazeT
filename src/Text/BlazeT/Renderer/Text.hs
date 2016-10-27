@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes #-}
 module Text.BlazeT.Renderer.Text
     ( renderMarkupBuilder
     , renderMarkupBuilderWith

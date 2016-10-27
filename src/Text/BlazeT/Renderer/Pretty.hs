@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes #-}
 module Text.BlazeT.Renderer.Pretty
     ( renderMarkup
     , renderHtml

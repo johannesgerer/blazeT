@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fsimpl-tick-factor=230 #-}
 
 -- the above option was not needed with

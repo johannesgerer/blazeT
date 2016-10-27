@@ -51,14 +51,13 @@ their [documentation](https://jaspervdj.be/blaze/).
 
 ## Unleash the monads
 
-[Text.BlazeT](https://hackage.haskell.org/package/blazeT/docs/Text-BlazeT.html) exports
-`runWith` and `execWith`, which work on any
-`Text.Blaze.Renderer.*`. The rendered markup will be returned within
-the base monad, whose actions can
-be
-[`lift`ed](https://hackage.haskell.org/package/transformers-0.5.2.0/docs/Control-Monad-Trans-Class.html) into
-the Markup, as shown in the following example
-(from [here](src/Readme.hs)):
+[Text.BlazeT](https://hackage.haskell.org/package/blazeT/docs/Text-BlazeT.html)
+exports `runWith` and `execWith`, which work on any
+`Text.BlazeT.Renderer.*`. The rendered markup will be returned within
+the base monad, whose actions can be
+[`lift`ed](https://hackage.haskell.org/package/transformers-0.5.2.0/docs/Control-Monad-Trans-Class.html)
+into the Markup, as shown in the following example (from
+[here](src/Readme.hs)):
 
 ```Haskell
 {-# LANGUAGE OverloadedStrings #-}
@@ -123,8 +122,16 @@ of `Blaze.Markup` and is basically a `WriterT` writing `Blaze.Markup`:
 newtype MarkupT m a = MarkupT { fromMarkupT :: WriterT B.Markup m a }
 ```
 
+The old `Text.Blaze.Markup` type is replaced by a rank-2 version of
+the transformer:
+
+```Haskell
+type Markup = forall m . Monad m => MarkupT m ()
+```
+
 Wrappers used to lift all `Blaze` entities into `BlazeT` are trivially
-expressible using basic `WriterT` class methods. Wrapping `Blaze.Markup` is simply `WriterT.tell`:
+expressible using basic `WriterT` class methods. Wrapping
+`Blaze.Markup` is simply `WriterT.tell`:
 
 ```Haskell
 wrapMarkupT :: Monad m => B.Markup -> MarkupT m ()
@@ -136,5 +143,4 @@ Wrapping functions that modify `Blaze.Markup` is simply  `WriterT.censor`:
 wrapMarkupT2 :: Monad m => (B.Markup -> B.Markup) -> MarkupT m a -> MarkupT m a
 wrapMarkupT2 = censor
 ```
-
 

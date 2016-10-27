@@ -1,19 +1,24 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE RankNTypes #-}
+
 module Text.BlazeT
   (
-      -- * Important types.
+   -- * DO NOT READ THIS. READ "Text.BlazeT.Internal" INSTEAD 
+    -- $descr
+    
+   -- * DO NOT READ THIS
+-- -- * Important types.
       Markup
     , Tag
     , Attribute
     , AttributeValue
 
-      -- * Creating attributes.
+-- -- * Creating attributes.
     , dataAttribute
     , customAttribute
 
-      -- * Converting values to Markup.
+-- -- * Converting values to Markup.
     , ToMarkup (..)
     , text
     , preEscapedText
@@ -24,19 +29,19 @@ module Text.BlazeT
     , unsafeByteString
     , unsafeLazyByteString
 
-      -- * Comments
+-- -- * Comments
     , textComment
     , lazyTextComment
     , stringComment
     , unsafeByteStringComment
     , unsafeLazyByteStringComment
 
-      -- * Creating tags.
+-- -- * Creating tags.
     , textTag
     , stringTag
 
-      -- * Converting values to attribute values.
-    , B.ToValue (..)
+-- -- * Converting values to attribute values.
+    , Text.Blaze.ToValue (..)
     , textValue
     , preEscapedTextValue
     , lazyTextValue
@@ -46,28 +51,28 @@ module Text.BlazeT
     , unsafeByteStringValue
     , unsafeLazyByteStringValue
 
-      -- * Setting attributes
+-- -- * Setting attributes
     , (!)
     , (!?)
 
-      -- * Modifiying Markup trees
+-- -- * Modifiying Markup trees
     , contents
 
-    -- * BlazeT new stuff
+    ,MarkupT(..)
+    ,MarkupI
+    ,mapMarkupT
     ,MarkupM
     ,Markup2
-    ,mapMarkupT
-    ,MarkupT
-    ,runMarkup
     ,runMarkupT
-    ,execMarkup
-    ,execMarkupT
+    ,runMarkup
     ,runWith
+    ,execMarkupT
+    ,execMarkup
     ,execWith
     ) where
 
-import qualified Text.Blaze as B
-import           Text.BlazeT.Internal
+import qualified Text.Blaze
+import           Text.BlazeT.Internal as Text.BlazeT.Internal 
 
 class ToMarkup a where
   toMarkup :: a -> Markup
@@ -76,8 +81,20 @@ class ToMarkup a where
 -- test :: (ToMarkup a, Monad m) => a -> MarkupT m ()
 -- test = toMarkup
 
-instance B.ToMarkup a => ToMarkup a where
-  toMarkup = wrapMarkup . B.toMarkup
+instance Text.Blaze.ToMarkup a => ToMarkup a where
+  toMarkup = wrapMarkup . Text.Blaze.toMarkup
   {-# INLINE toMarkup #-}
-  preEscapedToMarkup = wrapMarkup . B.preEscapedToMarkup
+  preEscapedToMarkup = wrapMarkup . Text.Blaze.preEscapedToMarkup
   {-# INLINE preEscapedToMarkup #-}
+
+
+-- $descr
+-- 
+-- Due due a Haddock bug, this documentation is misleading. Please
+-- read "Text.BlazeT.Internal" instead.
+--
+-- (The bug shows both @Text.Blaze.Markup@ and @Text.BlazeT.Markup@ as
+-- "Markup".)
+--
+-- Use this documentation only to see which entities are exported by
+-- this module.

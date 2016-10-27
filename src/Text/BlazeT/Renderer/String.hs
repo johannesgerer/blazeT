@@ -1,11 +1,10 @@
+{-# LANGUAGE RankNTypes #-}
 module Text.BlazeT.Renderer.String
     ( fromChoiceString
     , renderMarkup
     , renderHtml
   ) where
 
-import           Control.Monad
-import           Control.Monad.Identity
 import           Text.Blaze.Internal (ChoiceString)
 import qualified Text.Blaze.Renderer.String as BU
 import           Text.BlazeT
