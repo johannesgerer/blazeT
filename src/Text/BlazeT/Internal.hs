@@ -114,7 +114,7 @@ import qualified Text.Blaze.Internal as Text.Blaze
 
 {- | Everything is build around the simple @newtype@ definition of the
 'MarkupT' transformer, which makes use the 'Monoid' instance of Blaze
-'Text.Blaze.Markup' and is basically a 'WriterT' writing Blaze
+'Text.Blaze.Markup' and is simply a 'WriterT' writing Blaze
 'Text.Blaze.Markup':
 -}
 newtype MarkupT m a= MarkupT { fromMarkupT :: WriterT Text.Blaze.Markup m a }

@@ -3,30 +3,38 @@
 A true monad (transformer) version of the
 [blaze-markup](https://hackage.haskell.org/package/blaze-markup) and
 [blaze-html](https://hackage.haskell.org/package/blaze-html)
-libraries.
+libraries:
 
-# Why?
+> BlazeHtml is a blazingly fast HTML combinator library for the
+> Haskell programming language. It embeds HTML templates in Haskell
+> code for optimal efficiency and composability.
+
+— from https://jaspervdj.be/blaze/.
+
+## What’s wrong with blaze?
+
+Blaze’s `Markup` and `Html` **cannot be used as Monads**, let alone Monad transformers.
 
 While blaze's `Markup` and `Html` types have `Monad` instances and can
-leverage the the concise `do` notation, they do not satisfy
-the
-[Monad Laws](https://hackage.haskell.org/package/base-4.8.0.0/docs/Control-Monad.html#t:Monad) and
-thus cannot be used as Monads, let alone Monad transformers.
+leverage the concise `do` notation, they do not satisfy the
+[Monad Laws](https://hackage.haskell.org/package/base-4.8.0.0/docs/Control-Monad.html#t:Monad).
 
-## Use Cases
+## How do Monads help? - Use Cases
 
 The `MarkupT` Monad Transformer enables us to write Markup (e.g. HTML)
 templates that have access to all those Monads you cannot live without
 anymore.
 
-Accessing an environment
-([MonadReader](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Reader-Class.html)),
-accumulating log or other diagnostic output
-([MonadWriter](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Writer-Class.html)),
-doing `IO` (like database access) are the first things that come to
-mind.
+The first things that come to mind:
 
-The reason of existence of this library is its use
+* Accessing an environment
+([MonadReader](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Reader-Class.html))
+* Logging and other diagnostic output
+([MonadWriter](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Writer-Class.html)),
+* `IO` (e.g. for database access)
+
+
+The reason for the existence of this library is its use
 in [Lykah](http://johannesgerer.com/Lykah), which powers my personal
 website
 [http://johannesgerer.com](http://johannesgerer.com/johannesgerer.com). In
@@ -35,9 +43,9 @@ build things like menus or blog post lists) and automatically check,
 insert and keep track of referenced pages and assets, which turns out
 to be very useful functionality of a static website generator.
 
-# How to use it?
+## Usage
 
-## Backwards compatible
+### Integrating with your existing code
 
 The library is intended to serve as a drop-in replacement for the
 `blaze-markup` and `blaze-html` libraries and should be backwards
@@ -49,7 +57,7 @@ Text.BlazeT.*` and it should give the same results.
 For usage of blaze check out
 their [documentation](https://jaspervdj.be/blaze/).
 
-## Unleash the monads
+### Unleash the monads
 
 [Text.BlazeT](https://hackage.haskell.org/package/blazeT/docs/Text-BlazeT.html)
 exports `runWith` and `execWith`, which work on any
@@ -92,7 +100,7 @@ prints:
 <p>created with blazeT at 2016-10-26 01:09:16.969147361 UTC</p>
 ```
 
-# Installation
+## Installation
 
 1. To make it available on your system (or sandbox) use `cabal install blazeT`. 
 
@@ -104,9 +112,9 @@ cabal sandbox init #optional
 cabal install
 ```
     
-# Documentation on [Hackage](https://hackage.haskell.org/package/blazeT)
+## Documentation on [Hackage](https://hackage.haskell.org/package/blazeT)
 
-# Implementation
+## Implementation
 
 ... is contained
 in
@@ -116,7 +124,7 @@ Everything is build around the simple `newtype` definition of the
 `MarkupT` transformer, which makes use
 the
 [Monoid](https://hackage.haskell.org/package/base-4.7.0.2/docs/Data-Monoid.html) instance
-of `Blaze.Markup` and is basically a `WriterT` writing `Blaze.Markup`:
+of `Blaze.Markup` and is simply a `WriterT` writing `Blaze.Markup`:
 
 ```Haskell
 newtype MarkupT m a = MarkupT { fromMarkupT :: WriterT B.Markup m a }
