@@ -23,7 +23,7 @@ import qualified Text.Blaze.Renderer.Utf8 as BU
 import           Text.BlazeT
 
 renderMarkupBuilder :: MarkupM a -> B.Builder
-renderMarkupBuilder = BU.renderMarkupBuilder . execMarkup
+renderMarkupBuilder x = BU.renderMarkupBuilder $ execMarkup x
 
 renderHtmlBuilder :: MarkupM a -> B.Builder
 renderHtmlBuilder = renderMarkupBuilder
