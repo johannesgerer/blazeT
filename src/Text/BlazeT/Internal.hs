@@ -63,11 +63,11 @@ module Text.BlazeT.Internal
     , unsafeLazyByteString
 
       -- ** Comments
-    , Text.Blaze.textComment
-    , Text.Blaze.lazyTextComment
-    , Text.Blaze.stringComment
-    , Text.Blaze.unsafeByteStringComment
-    , Text.Blaze.unsafeLazyByteStringComment
+    , textComment
+    , lazyTextComment
+    , stringComment
+    , unsafeByteStringComment
+    , unsafeLazyByteStringComment
 
       -- ** Converting values to tags.
     , Text.Blaze.textTag
@@ -272,6 +272,22 @@ text = wrapMarkup . Text.Blaze.text
 lazyText :: LT.Text -> Markup
 lazyText = wrapMarkup . Text.Blaze.lazyText
 {-# INLINE lazyText #-}
+
+
+textComment :: T.Text -> Markup
+textComment = wrapMarkup . Text.Blaze.textComment
+
+lazyTextComment :: LT.Text -> Markup
+lazyTextComment = wrapMarkup . Text.Blaze.lazyTextComment
+
+stringComment :: String -> Markup
+stringComment = wrapMarkup . Text.Blaze.stringComment
+
+unsafeByteStringComment :: BS.ByteString -> Markup
+unsafeByteStringComment = wrapMarkup . Text.Blaze.unsafeByteStringComment
+
+unsafeLazyByteStringComment :: BL.ByteString -> Markup
+unsafeLazyByteStringComment = wrapMarkup . Text.Blaze.unsafeLazyByteStringComment
 
 -- $descr1
 -- The following is an adaptation of all "Text.Blaze.Internal" exports to
