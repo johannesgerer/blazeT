@@ -188,13 +188,17 @@ wrapMarkup2 :: (Text.Blaze.Markup -> Text.Blaze.Markup) -> Markup2
 wrapMarkup2 = wrapMarkupT2
 {-# INLINE wrapMarkup2 #-}
 
+#if MIN_VERSION_base(4,11,0)
+instance (Monad m,Monoid a) => Semigroup (MarkupT m a) where
+  a <> b = do {a' <- a; b >>= return . (mappend a')}
+  {-# INLINE (<>) #-}
+#endif
 
-instance (Monad m,Monoid a) => Monoid (MarkupT m a) where
+instance (Functor m, Monad m,Monoid a) => Monoid (MarkupT m a) where
   mempty = return mempty
-  {-# INLINE mempty #-}
-  a `mappend` b = do {a' <- a; b >>= return . (mappend a')}
+  a `mappend` b = do {a' <- a; fmap (mappend a') b}
   {-# INLINE mappend #-}
-
+  {-# INLINE mempty #-}
 
 instance Monad m => Text.Blaze.Attributable (MarkupT m a) where
   h ! a = wrapMarkupT2 (Text.Blaze.! a) h

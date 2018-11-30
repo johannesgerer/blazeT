@@ -1,4 +1,5 @@
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE MonoLocalBinds #-}
+{-# LANGUAGE RankNTypes     #-}
 module Text.BlazeT.Html
     (
     module Text.BlazeT
@@ -12,16 +13,16 @@ module Text.BlazeT.Html
     , preEscapedToHtml
     ) where
 
-import Text.BlazeT
+import           Text.BlazeT
 
 type HtmlT = MarkupT
 type HtmlM a = MarkupM a
 type Html = Markup
 
-toHtml ::(ToMarkup a) => a -> Html
+toHtml :: (ToMarkup a) => a -> Html
 toHtml = toMarkup
 
-preEscapedToHtml ::(ToMarkup a) => a -> Html
+preEscapedToHtml :: (ToMarkup a) => a -> Html
 preEscapedToHtml = preEscapedToMarkup
 
 -- $descr1 The following is an adaptation of all "Text.Blaze.Html"
