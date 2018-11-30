@@ -7,8 +7,7 @@ main = do
         haddockHoogle       = Flag True,
         haddockHtml         = Flag True,
         haddockProgramArgs  = [("-q",["aliased"])], -- does not seam to do anything
-        haddockExecutables  = Flag True,
-        haddockHscolour     = Flag True
+        haddockExecutables  = Flag True
         }
     }
 
