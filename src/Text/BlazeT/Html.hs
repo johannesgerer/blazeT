@@ -1,3 +1,4 @@
+{-# LANGUAGE MonoLocalBinds #-}
 {-# LANGUAGE RankNTypes #-}
 module Text.BlazeT.Html
     (
