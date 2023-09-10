@@ -189,11 +189,42 @@ wrapMarkup2 = wrapMarkupT2
 {-# INLINE wrapMarkup2 #-}
 
 
+mappendMarkupT
+#if defined(MIN_VERSION_base)
+#  if MIN_VERSION_base(4, 11, 0)
+  :: (Monad m, Semigroup a)
+#  else
+  :: (Monad m, Monoid a)
+#  endif
+#else
+  -- Almost certainly GHC < 8, which corresponds to `base` w/o Semigroup
+  :: (Monad m, Monoid a)
+#endif
+  => MarkupT m a
+  -> MarkupT m a
+  -> MarkupT m a
+a `mappendMarkupT` b = do {a' <- a; b >>= return . (a' <>)}
+
+#if defined(MIN_VERSION_base)
+#  if MIN_VERSION_base(4, 11, 0)
+instance (Monad m,Semigroup a) => Semigroup (MarkupT m a) where
+  (<>) = mappendMarkupT
+  {-# INLINE (<>) #-}
+#  else
 instance (Monad m,Monoid a) => Monoid (MarkupT m a) where
   mempty = return mempty
   {-# INLINE mempty #-}
-  a `mappend` b = do {a' <- a; b >>= return . (mappend a')}
+  mappend = mappendMarkupT
   {-# INLINE mappend #-}
+#  endif
+#else
+  -- Almost certainly GHC < 8, which corresponds to `base` w/o Semigroup
+instance (Monad m,Monoid a) => Monoid (MarkupT m a) where
+  mempty = return mempty
+  {-# INLINE mempty #-}
+  mappend = mappendMarkupT
+  {-# INLINE mappend #-}
+#endif
 
 
 instance Monad m => Text.Blaze.Attributable (MarkupT m a) where
